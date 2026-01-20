@@ -11,6 +11,8 @@ use DevMode\Constants;
 
 /**
  * Dashboard widget for dev mode controls
+ *
+ * @codeCoverageIgnore WordPress glue code
  */
 class DashboardWidget
 {

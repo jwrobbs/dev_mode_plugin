@@ -6,6 +6,8 @@ namespace DevMode\Admin\Ajax;
 
 /**
  * AJAX handler for toggling dev plugins
+ *
+ * @codeCoverageIgnore WordPress glue code
  */
 class PluginToggle
 {

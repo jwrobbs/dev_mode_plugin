@@ -6,6 +6,8 @@ namespace DevMode;
 
 /**
  * Main plugin initialization class
+ *
+ * @codeCoverageIgnore WordPress glue code
  */
 class Plugin
 {

@@ -6,6 +6,8 @@ namespace DevMode;
 
 /**
  * Plugin bootstrap and hook registration
+ *
+ * @codeCoverageIgnore WordPress glue code
  */
 class Bootstrap
 {

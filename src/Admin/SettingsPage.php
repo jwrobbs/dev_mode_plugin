@@ -8,6 +8,8 @@ use DevMode\Constants;
 
 /**
  * Admin settings page for managing watched dev plugins
+ *
+ * @codeCoverageIgnore WordPress glue code
  */
 class SettingsPage
 {

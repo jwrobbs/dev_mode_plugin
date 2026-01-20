@@ -8,6 +8,8 @@ use DevMode\Config\WpConfigEditor;
 
 /**
  * AJAX handler for toggling debug mode
+ *
+ * @codeCoverageIgnore WordPress glue code
  */
 class DebugToggle
 {

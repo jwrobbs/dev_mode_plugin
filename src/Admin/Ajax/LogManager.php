@@ -6,6 +6,8 @@ namespace DevMode\Admin\Ajax;
 
 /**
  * AJAX handler for debug log operations
+ *
+ * @codeCoverageIgnore WordPress glue code
  */
 class LogManager
 {
