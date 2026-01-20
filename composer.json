@@ -1,0 +1,36 @@
+{
+    "name": "pce/dev-mode-plugin",
+    "description": "WordPress dashboard widget with debug toggles, dev plugin controls, and environment detection",
+    "type": "wordpress-plugin",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Josh Robbs"
+        }
+    ],
+    "require": {
+        "php": ">=8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "brain/monkey": "^2.6",
+        "squizlabs/php_codesniffer": "^3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "DevMode\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DevMode\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-html coverage",
+        "lint": "phpcs",
+        "lint:fix": "phpcbf",
+        "check": "bin/check.php"
+    }
+}
