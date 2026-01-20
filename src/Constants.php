@@ -9,7 +9,7 @@ namespace DevMode;
  */
 class Constants
 {
-    public const VERSION = '1.0.1';
+    public const VERSION = '1.0.2';
     public const OPTION_WATCHED_PLUGINS = 'dev_mode_watched_plugins';
 
     /**

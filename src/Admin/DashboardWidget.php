@@ -95,7 +95,7 @@ class DashboardWidget
         <div class="dev-mode-widget">
             <!-- Environment Indicator -->
             <div class="dev-mode-section dev-mode-environment">
-                <span class="dev-mode-env-label">Environment</span>
+                <span class="dev-mode-env-label">ENV:</span>
                 <span class="dev-mode-env-badge" style="background-color: <?php echo esc_attr($envColor); ?>">
                     <?php echo esc_html(strtoupper($environment)); ?>
                 </span>
@@ -158,20 +158,22 @@ class DashboardWidget
             <?php if (!empty($watchedPlugins)) : ?>
                 <div class="dev-mode-section">
                     <h4>Dev Plugins</h4>
-                    <?php foreach ($watchedPlugins as $pluginFile => $pluginData) : ?>
-                        <label class="dev-mode-toggle">
-                            <input
-                                type="checkbox"
-                                class="dev-mode-plugin-toggle"
-                                data-plugin="<?php echo esc_attr($pluginFile); ?>"
-                                <?php checked($pluginData['active']); ?>
-                            >
-                            <span class="dev-mode-toggle-slider"></span>
-                            <span class="dev-mode-toggle-label">
-                                <?php echo esc_html($pluginData['name']); ?>
-                            </span>
-                        </label>
-                    <?php endforeach; ?>
+                    <div class="dev-mode-plugin-grid">
+                        <?php foreach ($watchedPlugins as $pluginFile => $pluginData) : ?>
+                            <label class="dev-mode-toggle">
+                                <input
+                                    type="checkbox"
+                                    class="dev-mode-plugin-toggle"
+                                    data-plugin="<?php echo esc_attr($pluginFile); ?>"
+                                    <?php checked($pluginData['active']); ?>
+                                >
+                                <span class="dev-mode-toggle-slider"></span>
+                                <span class="dev-mode-toggle-label">
+                                    <?php echo esc_html($pluginData['name']); ?>
+                                </span>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             <?php endif; ?>
 
