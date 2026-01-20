@@ -40,21 +40,24 @@ class DebugToggle
             wp_send_json_error(['message' => 'Insufficient permissions.'], 403);
         }
 
-        // Get the requested state
+        // Get the requested state and constant
         $enable = isset($_POST['enable']) && $_POST['enable'] === 'true';
+        $constant = isset($_POST['constant']) ? sanitize_text_field($_POST['constant']) : 'WP_DEBUG';
 
         // Check if config is writable
         if (!WpConfigEditor::isWritable()) {
             wp_send_json_error(['message' => 'wp-config.php is not writable.'], 500);
         }
 
-        // Toggle the debug mode
-        $result = WpConfigEditor::setDebugMode($enable);
+        // Toggle the specific constant
+        $result = WpConfigEditor::setConstant($constant, $enable);
 
         if ($result) {
+            $state = $enable ? 'enabled' : 'disabled';
             wp_send_json_success([
-                'message' => $enable ? 'Debug mode enabled.' : 'Debug mode disabled.',
-                'debug_enabled' => $enable,
+                'message' => "{$constant} {$state}.",
+                'constant' => $constant,
+                'enabled' => $enable,
             ]);
         } else {
             wp_send_json_error(['message' => 'Failed to update wp-config.php.'], 500);

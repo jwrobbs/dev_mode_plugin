@@ -34,6 +34,15 @@
     padding: 15px 12px;
 }
 
+.dev-mode-env-label {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
 .dev-mode-env-badge {
     display: inline-block;
     padding: 8px 16px;
@@ -43,6 +52,14 @@
     font-size: 12px;
     letter-spacing: 1px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Sub-toggles (indented debug options) */
+.dev-mode-sub-toggles {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid #e0e0e0;
+    margin-top: 8px;
 }
 
 /* Toggle Switch */
@@ -128,6 +145,17 @@
 
 .dev-mode-snapshot td:last-child {
     word-break: break-all;
+}
+
+/* Button Group */
+.dev-mode-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dev-mode-button-group .button {
+    margin: 0;
 }
 
 /* Footer */

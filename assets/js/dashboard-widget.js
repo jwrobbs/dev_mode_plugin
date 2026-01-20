@@ -21,11 +21,12 @@
     }
 
     /**
-     * Handle debug mode toggle
+     * Handle debug constant toggle
      */
-    $(document).on('change', '#dev-mode-debug-toggle', function() {
+    $(document).on('change', '.dev-mode-debug-constant', function() {
         var $toggle = $(this);
         var $widget = $toggle.closest('.dev-mode-widget');
+        var constant = $toggle.data('constant');
         var enable = $toggle.is(':checked');
 
         $widget.addClass('dev-mode-loading');
@@ -36,17 +37,45 @@
             data: {
                 action: 'dev_mode_toggle_debug',
                 nonce: devModeAjax.nonce,
+                constant: constant,
                 enable: enable ? 'true' : 'false'
             },
             success: function(response) {
                 if (response.success) {
                     showToast(response.data.message, 'success');
+
                     // Update the label text
                     $toggle.closest('.dev-mode-toggle')
                         .find('.dev-mode-toggle-label strong')
                         .text(enable ? 'ON' : 'OFF');
+
+                    // If this is WP_DEBUG, show/hide sub-toggles and update Site Info
+                    if (constant === 'WP_DEBUG') {
+                        var $subToggles = $widget.find('.dev-mode-sub-toggles');
+                        if (enable) {
+                            $subToggles.slideDown(200);
+                        } else {
+                            $subToggles.slideUp(200);
+                        }
+
+                        // Update Debug Mode in Site Info table
+                        $widget.find('.dev-mode-snapshot td').each(function() {
+                            if ($(this).text() === 'Debug Mode') {
+                                $(this).next('td').text(enable ? 'Enabled' : 'Disabled');
+                            }
+                        });
+
+                        // Update the hidden textarea for copy
+                        var $textarea = $widget.find('#dev-mode-snapshot-text');
+                        var text = $textarea.val();
+                        text = text.replace(
+                            /Debug Mode: (Enabled|Disabled)/,
+                            'Debug Mode: ' + (enable ? 'Enabled' : 'Disabled')
+                        );
+                        $textarea.val(text);
+                    }
                 } else {
-                    showToast(response.data.message || 'Error toggling debug mode', 'error');
+                    showToast(response.data.message || 'Error toggling ' + constant, 'error');
                     $toggle.prop('checked', !enable); // Revert
                 }
             },
@@ -132,6 +161,44 @@
 
         $textarea.css('display', 'none');
     }
+
+    /**
+     * Handle utility action buttons
+     */
+    $(document).on('click', '.dev-mode-utility-btn', function() {
+        var $btn = $(this);
+        var $widget = $btn.closest('.dev-mode-widget');
+        var action = $btn.data('action');
+        var confirmMsg = $btn.data('confirm');
+
+        if (confirmMsg && !confirm(confirmMsg)) {
+            return;
+        }
+
+        $widget.addClass('dev-mode-loading');
+
+        $.ajax({
+            url: devModeAjax.ajaxUrl,
+            method: 'POST',
+            data: {
+                action: action,
+                nonce: devModeAjax.nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    showToast(response.data.message, 'success');
+                } else {
+                    showToast(response.data.message || 'Error performing action', 'error');
+                }
+            },
+            error: function() {
+                showToast('Network error occurred', 'error');
+            },
+            complete: function() {
+                $widget.removeClass('dev-mode-loading');
+            }
+        });
+    });
 
     /**
      * Handle clear log

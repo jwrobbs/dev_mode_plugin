@@ -31,5 +31,6 @@ class Plugin
         Admin\Ajax\DebugToggle::register();
         Admin\Ajax\PluginToggle::register();
         Admin\Ajax\LogManager::register();
+        Admin\Ajax\UtilityActions::register();
     }
 }

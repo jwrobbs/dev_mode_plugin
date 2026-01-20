@@ -18,10 +18,12 @@ class SiteSnapshot
     {
         global $wpdb;
 
+        $dbInfo = self::getDatabaseInfo();
+
         return [
             'WordPress Version' => get_bloginfo('version'),
             'PHP Version' => PHP_VERSION,
-            'MySQL Version' => $wpdb->db_version(),
+            $dbInfo['label'] => $dbInfo['version'],
             'Active Theme' => self::getActiveTheme(),
             'Active Plugins' => self::getActivePluginCount(),
             'Memory Limit' => WP_MEMORY_LIMIT,
@@ -30,6 +32,25 @@ class SiteSnapshot
             'Site URL' => get_site_url(),
             'Home URL' => get_home_url(),
         ];
+    }
+
+    /**
+     * Get database type and version
+     *
+     * @return array{label: string, version: string}
+     */
+    private static function getDatabaseInfo(): array
+    {
+        global $wpdb;
+
+        $serverInfo = $wpdb->db_server_info();
+        $version = $wpdb->db_version();
+
+        if (stripos($serverInfo, 'mariadb') !== false) {
+            return ['label' => 'MariaDB Version', 'version' => $version];
+        }
+
+        return ['label' => 'MySQL Version', 'version' => $version];
     }
 
     /**

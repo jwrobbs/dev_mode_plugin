@@ -85,7 +85,7 @@ class DashboardWidget
     {
         $environment = EnvironmentDetector::detect();
         $envColor = EnvironmentDetector::getColor();
-        $isDebugEnabled = WpConfigEditor::isDebugEnabled();
+        $debugSettings = WpConfigEditor::getDebugSettings();
         $isConfigWritable = WpConfigEditor::isWritable();
         $snapshot = SiteSnapshot::collect();
         $logInfo = SiteSnapshot::getDebugLogInfo();
@@ -95,13 +95,14 @@ class DashboardWidget
         <div class="dev-mode-widget">
             <!-- Environment Indicator -->
             <div class="dev-mode-section dev-mode-environment">
+                <span class="dev-mode-env-label">Environment</span>
                 <span class="dev-mode-env-badge" style="background-color: <?php echo esc_attr($envColor); ?>">
                     <?php echo esc_html(strtoupper($environment)); ?>
                 </span>
             </div>
 
             <!-- Debug Toggle -->
-            <div class="dev-mode-section">
+            <div class="dev-mode-section" id="dev-mode-debug-section">
                 <h4>Debug Mode</h4>
                 <?php if (!$isConfigWritable) : ?>
                     <p class="dev-mode-warning">
@@ -111,15 +112,46 @@ class DashboardWidget
                 <label class="dev-mode-toggle">
                     <input
                         type="checkbox"
-                        id="dev-mode-debug-toggle"
-                        <?php checked($isDebugEnabled); ?>
+                        class="dev-mode-debug-constant"
+                        data-constant="WP_DEBUG"
+                        <?php checked($debugSettings['WP_DEBUG']); ?>
                         <?php disabled(!$isConfigWritable); ?>
                     >
                     <span class="dev-mode-toggle-slider"></span>
                     <span class="dev-mode-toggle-label">
-                        WP_DEBUG: <strong><?php echo $isDebugEnabled ? 'ON' : 'OFF'; ?></strong>
+                        WP_DEBUG: <strong><?php echo $debugSettings['WP_DEBUG'] ? 'ON' : 'OFF'; ?></strong>
                     </span>
                 </label>
+                <?php $subToggleStyle = $debugSettings['WP_DEBUG'] ? '' : 'style="display:none;"'; ?>
+                <div class="dev-mode-sub-toggles" <?php echo $subToggleStyle; ?>>
+                    <label class="dev-mode-toggle">
+                        <input
+                            type="checkbox"
+                            class="dev-mode-debug-constant"
+                            data-constant="WP_DEBUG_LOG"
+                            <?php checked($debugSettings['WP_DEBUG_LOG']); ?>
+                            <?php disabled(!$isConfigWritable); ?>
+                        >
+                        <span class="dev-mode-toggle-slider"></span>
+                        <span class="dev-mode-toggle-label">
+                            WP_DEBUG_LOG: <strong><?php echo $debugSettings['WP_DEBUG_LOG'] ? 'ON' : 'OFF'; ?></strong>
+                        </span>
+                    </label>
+                    <label class="dev-mode-toggle">
+                        <input
+                            type="checkbox"
+                            class="dev-mode-debug-constant"
+                            data-constant="WP_DEBUG_DISPLAY"
+                            <?php checked($debugSettings['WP_DEBUG_DISPLAY']); ?>
+                            <?php disabled(!$isConfigWritable); ?>
+                        >
+                        <span class="dev-mode-toggle-slider"></span>
+                        <span class="dev-mode-toggle-label">
+                            <?php $displayState = $debugSettings['WP_DEBUG_DISPLAY'] ? 'ON' : 'OFF'; ?>
+                            WP_DEBUG_DISPLAY: <strong><?php echo $displayState; ?></strong>
+                        </span>
+                    </label>
+                </div>
             </div>
 
             <!-- Dev Plugin Toggles -->
@@ -189,6 +221,48 @@ class DashboardWidget
                     </p>
                 <?php else : ?>
                     <p class="dev-mode-muted">No debug.log file exists.</p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Utility Actions -->
+            <div class="dev-mode-section">
+                <h4>Quick Actions</h4>
+                <div class="dev-mode-button-group">
+                    <button type="button"
+                            class="button button-small dev-mode-utility-btn"
+                            data-action="dev_mode_clear_cache">
+                        Clear WP Cache
+                    </button>
+                    <button type="button"
+                            class="button button-small dev-mode-utility-btn"
+                            data-action="dev_mode_flush_permalinks">
+                        Flush Permalinks
+                    </button>
+                </div>
+                <?php
+                $hasSimpleHistory = class_exists('SimpleHistory')
+                    || class_exists('Simple_History\\Simple_History');
+                $hasActionScheduler = class_exists('ActionScheduler_DBStore');
+                ?>
+                <?php if ($hasSimpleHistory || $hasActionScheduler) : ?>
+                    <div class="dev-mode-button-group" style="margin-top: 6px;">
+                        <?php if ($hasSimpleHistory) : ?>
+                            <button type="button"
+                                    class="button button-small dev-mode-utility-btn"
+                                    data-action="dev_mode_clear_simple_history"
+                                    data-confirm="Clear all Simple History logs?">
+                                Clear Simple History
+                            </button>
+                        <?php endif; ?>
+                        <?php if ($hasActionScheduler) : ?>
+                            <button type="button"
+                                    class="button button-small dev-mode-utility-btn"
+                                    data-action="dev_mode_clear_action_scheduler"
+                                    data-confirm="Clear completed/failed Action Scheduler entries?">
+                                Clear Action Scheduler
+                            </button>
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
             </div>
 

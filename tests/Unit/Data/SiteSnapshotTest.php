@@ -96,7 +96,7 @@ class SiteSnapshotTest extends TestCase
         };
         Functions\when('wp_get_theme')->justReturn($mockTheme);
 
-        // Mock $wpdb - method name matches WordPress convention
+        // Mock $wpdb - method names match WordPress convention
         // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
         $GLOBALS['wpdb'] = new class
         {
@@ -104,6 +104,12 @@ class SiteSnapshotTest extends TestCase
             public function db_version()
             {
                 return '8.0.0';
+            }
+
+            // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+            public function db_server_info()
+            {
+                return '8.0.0-MySQL';
             }
         };
 
@@ -147,7 +153,13 @@ class SiteSnapshotTest extends TestCase
             // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
             public function db_version()
             {
-                return '8.0.0';
+                return '10.11.14';
+            }
+
+            // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+            public function db_server_info()
+            {
+                return '10.11.14-MariaDB';
             }
         };
 
@@ -156,7 +168,7 @@ class SiteSnapshotTest extends TestCase
         $this->assertIsArray($result);
         $this->assertArrayHasKey('WordPress Version', $result);
         $this->assertArrayHasKey('PHP Version', $result);
-        $this->assertArrayHasKey('MySQL Version', $result);
+        $this->assertArrayHasKey('MariaDB Version', $result);
         $this->assertArrayHasKey('Active Theme', $result);
     }
 }

@@ -78,7 +78,7 @@ class WpConfigEditor
     }
 
     /**
-     * Toggle debug mode on or off
+     * Toggle debug mode on or off (sets all debug constants)
      *
      * @param bool $enable True to enable debug mode, false to disable
      * @return bool True on success, false on failure
@@ -103,6 +103,36 @@ class WpConfigEditor
         }
 
         // Write the file
+        $result = file_put_contents($path, $content);
+        return $result !== false;
+    }
+
+    /**
+     * Set a specific debug constant
+     *
+     * @param string $constant The constant name (WP_DEBUG, WP_DEBUG_LOG, WP_DEBUG_DISPLAY)
+     * @param bool $enable True to enable, false to disable
+     * @return bool True on success, false on failure
+     */
+    public static function setConstant(string $constant, bool $enable): bool
+    {
+        if (!in_array($constant, self::DEBUG_CONSTANTS, true)) {
+            return false;
+        }
+
+        $path = self::findConfigPath();
+        if ($path === null || !is_writable($path)) {
+            return false;
+        }
+
+        $content = file_get_contents($path);
+        if ($content === false) {
+            return false;
+        }
+
+        $newValue = $enable ? 'true' : 'false';
+        $content = self::updateConstant($content, $constant, $newValue);
+
         $result = file_put_contents($path, $content);
         return $result !== false;
     }
